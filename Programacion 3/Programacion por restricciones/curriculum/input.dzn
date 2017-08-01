@@ -1,0 +1,245 @@
+N = 58;          % Number of subjects
+MaxCredit = 20;  %  
+MinCredit = 16;  %  
+S = 10;          %  Num of semeters
+K = 2;           %  Num of pre
+subject = array1d(1..58, [
+    "Humanidades 1", % subject 1
+    "Matemáticas 1", % subject 2
+    "Desarrollo del pensamiento lógico", % subject 3
+    "Programación 1", % subject 4
+    "Introducción a la informática", % subject 5
+    "Deportes 1", % subject 6
+    "Laboratorio de Física 1", % subject 7
+    "Física 1", % subject 8
+    "Matemáticas 2", % subject 9
+    "Algebra lineal", % subject 10
+    "Programación 2", % subject 11
+    "Deportes 2", % subject 12
+    "Humanidades 2", % subject 13
+    "Laboratorio de Física 2", % subject 14
+    "Física 2", % subject 15
+    "Matemáticas 3", % subject 16
+    "Estructura de Datos", % subject 17
+    "Lógica", % subject 18
+    "Laboratorio de Electrónica", % subject 19
+    "Fundamentos de Electrónica", % subject 20
+    "Laboratorio de Física 3", % subject 21
+    "Física 3", % subject 22
+    "Matemáticas 4", % subject 23
+    "Teoría de Sistemas", % subject 24
+    "Programación 3", % subject 25
+    "Laboratorio de Electrónica Digital", % subject 26
+    "Electrónica Digital", % subject 27
+    "Estadística", % subject 28
+    "Programación 4", % subject 29
+    "Administración de Empresas", % subject 30
+    "Gramáticas y Lenguajes formales", % subject 31
+    "Técnicas de la Comunicación", % subject 32
+    "Arquitectura de Computadores", % subject 33
+    "Estadística Especial", % subject 34
+    "Investigación de Operaciones", % subject 35
+    "Computación Grafica", % subject 36
+    "Base de Datos", % subject 37
+    "Sistemas Operativos", % subject 38
+    "Compiladores", % subject 39
+    "Comunicaciones 1", % subject 40
+    "Inteligencia Artificial", % subject 41
+    "Ingeniería de Software 1", % subject 42
+    "Sistemas Distribuidos", % subject 43
+    "Comunicaciones 2", % subject 44
+    "Computación Blanda", % subject 45
+    "Ingeniería de Software 2", % subject 46
+    "Legislación, Ética y Contratación", % subject 47
+    "Gerencia de Proyectos", % subject 48
+    "Arquitectura Cliente/ Servidor", % subject 49
+    "Electiva A1", % subject 50
+    "Administración de Proyectos de Software", % subject 51
+    "Laboratorio de Software", % subject 52
+    "Proyecto de Grado 1", % subject 53
+    "Constitución Política", % subject 54
+    "Emprendimiento", % subject 55
+    "Electiva A2", % subject 56
+    "Auditoria de Sistemas", % subject 57
+    "Proyecto de Grado 1", % subject 58
+]);
+credit = array1d(1..58, [
+    2, % subject 1
+    5, % subject 2
+    2, % subject 3
+    5, % subject 4
+    3, % subject 5
+    1, % subject 6
+    2, % subject 7
+    4, % subject 8
+    5, % subject 9
+    3, % subject 10
+    4, % subject 11
+    1, % subject 12
+    2, % subject 13
+    2, % subject 14
+    4, % subject 15
+    4, % subject 16
+    4, % subject 17
+    3, % subject 18
+    3, % subject 19
+    4, % subject 20
+    2, % subject 21
+    4, % subject 22
+    3, % subject 23
+    2, % subject 24
+    3, % subject 25
+    3, % subject 26
+    4, % subject 27
+    2, % subject 28
+    3, % subject 29
+    3, % subject 30
+    5, % subject 31
+    4, % subject 32
+    4, % subject 33
+    2, % subject 34
+    3, % subject 35
+    3, % subject 36
+    4, % subject 37
+    4, % subject 38
+    3, % subject 39
+    3, % subject 40
+    4, % subject 41
+    4, % subject 42
+    3, % subject 43
+    3, % subject 44
+    5, % subject 45
+    4, % subject 46
+    2, % subject 47
+    3, % subject 48
+    4, % subject 49
+    3, % subject 50
+    3, % subject 51
+    3, % subject 52
+    2, % subject 53
+    1, % subject 54
+    3, % subject 55
+    3, % subject 56
+    3, % subject 57
+    6, % subject 58
+]);
+req = array2d(1..58,1..2,[
+    0, 0, % subject 1
+    0, 0, % subject 2
+    0, 0, % subject 3
+    0, 0, % subject 4
+    0, 0, % subject 5
+    0, 0, % subject 6
+    0, 0, % subject 7
+    2, 0, % subject 8
+    2, 0, % subject 9
+    2, 0, % subject 10
+    4, 0, % subject 11
+    6, 0, % subject 12
+    1, 0, % subject 13
+    7, 0, % subject 14
+    8, 9, % subject 15
+    9, 0, % subject 16
+    11, 0, % subject 17
+    5, 0, % subject 18
+    0, 0, % subject 19
+    15, 0, % subject 20
+    14, 0, % subject 21
+    15, 16, % subject 22
+    16, 0, % subject 23
+    9, 0, % subject 24
+    11, 0, % subject 25
+    19, 0, % subject 26
+    20, 0, % subject 27
+    16, 0, % subject 28
+    17, 0, % subject 29
+    0, 0, % subject 30
+    18, 0, % subject 31
+    0, 0, % subject 32
+    27, 0, % subject 33
+    28, 0, % subject 34
+    16, 0, % subject 35
+    10, 25, % subject 36
+    17, 0, % subject 37
+    33, 0, % subject 38
+    20, 0, % subject 39
+    22, 23, % subject 40
+    29, 0, % subject 41
+    37, 0, % subject 42
+    38, 0, % subject 43
+    40, 0, % subject 44
+    41, 0, % subject 45
+    42, 0, % subject 46
+    0, 0, % subject 47
+    30, 0, % subject 48
+    43, 0, % subject 49
+    43, 46, % subject 50
+    48, 42, % subject 51
+    42, 0, % subject 52
+    42, 0, % subject 53
+    0, 0, % subject 54
+    43, 0, % subject 55
+    50, 0, % subject 56
+    51, 0, % subject 57
+    53, 0, % subject 58
+]);
+simultaneous = array1d(1..58,[
+    0, % subject 1
+    0, % subject 2
+    0, % subject 3
+    0, % subject 4
+    0, % subject 5
+    0, % subject 6
+    8, % subject 7
+    7, % subject 8
+    0, % subject 9
+    0, % subject 10
+    0, % subject 11
+    0, % subject 12
+    0, % subject 13
+    15, % subject 14
+    14, % subject 15
+    0, % subject 16
+    0, % subject 17
+    0, % subject 18
+    20, % subject 19
+    19, % subject 20
+    22, % subject 21
+    21, % subject 22
+    0, % subject 23
+    0, % subject 24
+    0, % subject 25
+    27, % subject 26
+    26, % subject 27
+    0, % subject 28
+    0, % subject 29
+    0, % subject 30
+    0, % subject 31
+    0, % subject 32
+    0, % subject 33
+    0, % subject 34
+    0, % subject 35
+    0, % subject 36
+    0, % subject 37
+    0, % subject 38
+    0, % subject 39
+    0, % subject 40
+    0, % subject 41
+    0, % subject 42
+    0, % subject 43
+    0, % subject 44
+    0, % subject 45
+    0, % subject 46
+    48, % subject 47
+    47, % subject 48
+    0, % subject 49
+    0, % subject 50
+    0, % subject 51
+    0, % subject 52
+    0, % subject 53
+    0, % subject 54
+    0, % subject 55
+    0, % subject 56
+    0, % subject 57
+    0, % subject 58
+]);
