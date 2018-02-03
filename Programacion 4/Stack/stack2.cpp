@@ -52,12 +52,19 @@ void print(Stack *S){
 	}
 }
 
+void printMenu(){
+	cout<<"1. Adicionar elemento"<<endl;
+	cout<<"2. Eliminar elemento"<<endl;
+	cout<<"3. Imprimir pila"<<endl;
+}
+
 int main(){
 	int op;
 	float x;
 	Stack *S;
 	S= (Stack*)malloc(sizeof(Stack));
 	S= NULL;
+	printMenu();
 	while(cin>>op){
 		if(op==1){
 			cout<<"Ingrese un numero: ";
@@ -75,5 +82,6 @@ int main(){
 		print(S);
 		else
 		cout<<"No existe operacion"<<endl;
+		printMenu();
 	}
 }

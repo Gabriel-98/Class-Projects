@@ -39,11 +39,19 @@ void print(Stack *S){
 	}
 }
 
+void printMenu(){
+	cout<<"1. Adicionar elemento"<<endl;
+	cout<<"2. Eliminar elemento"<<endl;
+	cout<<"3. Pila llena?"<<endl;
+	cout<<"4. Imprimir pila"<<endl;
+}
+
 int main(){
 	int op;
 	float x;
 	Stack S;
 	init(&S);
+	printMenu();
 	while(cin>>op){
 		if(op==1){
 			if(S.top < 20){
@@ -71,5 +79,7 @@ int main(){
 		print(&S);
 		else
 		cout<<"No existe operacion"<<endl;
+		
+		printMenu();
 	}
 }
