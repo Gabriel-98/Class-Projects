@@ -11,6 +11,9 @@ end sumador;
 architecture arq_sumador of sumador is
 
 begin
-	C <= A + B;
+	process(A,B)
+	begin
+		C <= A + B;
+	end process;
 
 end arq_sumador;

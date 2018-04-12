@@ -11,7 +11,13 @@ end multiplexor;
 architecture arq_multiplexor of multiplexor is
 
 begin
-	result <= A when i = '0' else B;
+	process(A,B,i)
+	begin
+		case i is
+			when '0' => result <= A;
+			when others => result <= B;
+		end case;
+	end process;
 
 end arq_multiplexor;
 

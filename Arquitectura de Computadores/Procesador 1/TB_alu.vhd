@@ -5,7 +5,7 @@ ENTITY TB_alu IS
 END TB_alu;
  
 ARCHITECTURE behavior OF TB_alu IS 
- 
+
     COMPONENT alu
     PORT(
          A : IN  std_logic_vector(31 downto 0);
@@ -34,25 +34,40 @@ BEGIN
    begin		
       A <= X"000AF00A";
 		B <= X"0000608F";
-		op <= "000001";  
+		op <= "000001";		-- and
       wait for 20 ns;
-		A <= X"000AF00A";
-		B <= X"0000608F";
-		op <= "000010";  
+		op <= "000101";  		-- andn
       wait for 20 ns;
-		A <= X"000AF00A";
-		B <= X"0000608F";
-		op <= "000011";  
+		op <= "000010";		-- or
       wait for 20 ns;
-		A <= X"000AF00A";
-		B <= X"0000608F";
-		op <= "000000";  
+		op <= "000110";  		-- orn
       wait for 20 ns;
-		A <= X"000AF00A";
-		B <= X"0000608F";
-		op <= "000100";  
+		op <= "000011";  		-- xor
       wait for 20 ns;
-		
+		op <= "000111";  		-- xnor
+      wait for 20 ns;
+		op <= "000000";  		-- add
+      wait for 20 ns;
+		op <= "000100";  		-- sub
+      wait for 20 ns;
+		A <= X"00000005";
+		B <= X"00000002";
+		op <= "100101";  		-- sll
+      wait for 20 ns;
+		op <= "100110";  		-- srl
+      wait for 20 ns;
+		A <= X"00000CA2";
+		B <= X"0000000A";
+		op <= "100101";  		-- sll
+      wait for 20 ns;
+		op <= "100110";  		-- srl
+      wait for 20 ns;
+		A <= X"00000001";
+		B <= X"0000001F";
+		op <= "100101";  		-- sll
+      wait for 20 ns;
+		op <= "100110";  		-- srl
+      wait for 20 ns;
    end process;
 
 END;
