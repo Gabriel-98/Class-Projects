@@ -12,7 +12,7 @@ ARCHITECTURE behavior OF TB_RegisterFile IS
          rs2 : IN  std_logic_vector(4 downto 0);
          rd : IN  std_logic_vector(4 downto 0);
          dwr : IN  std_logic_vector(31 downto 0);
-         rst : IN  std_logic;
+         reset : IN  std_logic;
          crs1 : OUT  std_logic_vector(31 downto 0);
          crs2 : OUT  std_logic_vector(31 downto 0)
         );
@@ -22,7 +22,7 @@ ARCHITECTURE behavior OF TB_RegisterFile IS
    signal rs2 : std_logic_vector(4 downto 0) := (others => '0');
    signal rd : std_logic_vector(4 downto 0) := (others => '0');
    signal dwr : std_logic_vector(31 downto 0) := (others => '0');
-   signal rst : std_logic := '0';
+   signal reset : std_logic := '0';
 
    signal crs1 : std_logic_vector(31 downto 0);
    signal crs2 : std_logic_vector(31 downto 0);
@@ -34,16 +34,16 @@ BEGIN
           rs2 => rs2,
           rd => rd,
           dwr => dwr,
-          rst => rst,
+          reset => reset,
           crs1 => crs1,
           crs2 => crs2
         );
 
    stim_proc: process
    begin
-		rst <= '1';
+		reset <= '1';
 		wait for 20 ns;
-		rst <= '0';
+		reset <= '0';
 		rs1 <= "00001";
 		rs2 <= "00001";
 		rd <= "00000";

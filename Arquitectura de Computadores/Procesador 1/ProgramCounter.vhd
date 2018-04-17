@@ -2,21 +2,21 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity ProgramCounter is
-    Port ( addr : in  STD_LOGIC_VECTOR (31 downto 0);
-           rst : in  STD_LOGIC;
-           clk : in  STD_LOGIC;
+    Port ( address : in  STD_LOGIC_VECTOR (31 downto 0);
+           reset : in  STD_LOGIC;
+           clock : in  STD_LOGIC;
            PCout : out  STD_LOGIC_VECTOR (31 downto 0));
 end ProgramCounter;
 
 architecture arq_ProgramCounter of ProgramCounter is
 
 begin
-	process(clk,rst)
+	process(clock,reset)
 	begin
-		if rst = '1' then
+		if reset = '1' then
 			PCout <= X"00000000";
-		elsif clk'event and clk = '1' then
-			PCout <= addr;
+		elsif clock'event and clock = '1' then
+			PCout <= address;
 		end if;
 	end process;
 

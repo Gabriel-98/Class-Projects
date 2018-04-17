@@ -27,17 +27,17 @@ BEGIN
    stim_proc: process
    begin		
 		sinm13 <= "0000000000000";
-      wait for 100 ns;
+      wait for 20 ns;
 		sinm13 <= "1111111111111";
-      wait for 100 ns;
+      wait for 20 ns;
 		sinm13 <= "1101100001110";
-      wait for 100 ns;
+      wait for 20 ns;
 		sinm13 <= "0001110001111";
-      wait for 100 ns;
+      wait for 20 ns;
 		sinm13 <= "1000000000000";
-      wait for 100 ns;
+      wait for 20 ns;
 		sinm13 <= "0111111111111";
-      wait for 100 ns;
+      wait for 20 ns;
    end process;
 
 END;

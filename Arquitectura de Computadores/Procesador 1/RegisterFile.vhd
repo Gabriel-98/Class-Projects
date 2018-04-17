@@ -7,7 +7,7 @@ entity RegisterFile is
            rs2 : in  STD_LOGIC_VECTOR (4 downto 0);
            rd : in  STD_LOGIC_VECTOR (4 downto 0);
            dwr : in  STD_LOGIC_VECTOR (31 downto 0);
-           rst : in  STD_LOGIC;
+           reset : in  STD_LOGIC;
            crs1 : out  STD_LOGIC_VECTOR (31 downto 0);
            crs2 : out  STD_LOGIC_VECTOR (31 downto 0));
 end RegisterFile;
@@ -18,9 +18,9 @@ architecture arq_RegisterFile of RegisterFile is
 	signal RF : ram_type:=(others => X"00000000");
 
 begin
-	process(rs1,rs2,rd,dwr,rst,RF)
+	process(rs1,rs2,rd,dwr,reset,RF)
 	begin
-		if rst = '1' then
+		if reset = '1' then
 			RF <= (others => X"00000000");
 		end if;
 		crs1 <= RF(conv_integer(rs1));
@@ -29,7 +29,6 @@ begin
 			RF(conv_integer(rd)) <= dwr;
 		end if;
 	end process;
-
 
 end arq_RegisterFile;
 
