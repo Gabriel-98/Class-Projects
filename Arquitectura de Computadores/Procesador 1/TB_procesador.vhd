@@ -42,7 +42,7 @@ BEGIN
 		reset <= '1';
       wait for 5 ns;
 		reset <= '0';
-		wait for 200 ns;
+		wait for 1000 ns;
    end process;
 
 END;

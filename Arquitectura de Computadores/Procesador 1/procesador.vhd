@@ -69,7 +69,7 @@ architecture arq_procesador of procesador is
 
 begin
 	L1: sumador Port Map(
-		 A => pc,
+		 A => npc,
 		 B => X"00000001",
 		 C => dir
 	);
