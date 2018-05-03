@@ -1,0 +1,10 @@
+mov 51, %l0
+mov , %l1
+mov , %l2
+mov , %l3
+mov , %l4
+sll %l0, 6, %l5
+srl %l0, 3, %l5
+addcc ,
+addcc , ,
+add , ,

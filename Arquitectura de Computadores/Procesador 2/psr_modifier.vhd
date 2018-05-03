@@ -14,7 +14,10 @@ architecture arq_psr_modifier of psr_modifier is
 begin
 	process(crs1,crs2,op_alu,result_alu)
 	begin
-		if op_alu /= "111111" and op_alu(4) = '1' then		-- ICC
+		if op_alu = "010000" or op_alu = "011000" or op_alu = "010100" or op_alu = "011100" or
+			op_alu = "010001" or op_alu = "010101" or op_alu = "010010" or op_alu = "010110" or
+			op_alu = "010011" or op_alu = "010111" then
+			
 			-- NEGATIVE
 			nzvc(3) <= result_alu(31);
 			
@@ -26,16 +29,22 @@ begin
 			end if;
 			
 			-- OVERFLOW
-			nzvc(1) <= (crs1(31) and crs2(31) and not(result_alu(31))) or (not(crs1(31)) and not(crs2(31)) and result_alu(31));
+			if op_alu = "010000" or op_alu = "011000" then
+				nzvc(1) <= (crs1(31) and crs2(31) and not(result_alu(31))) or (not(crs1(31)) and not(crs2(31)) and result_alu(31));
+			elsif op_alu = "010100" or op_alu = "011100" then
+				nzvc(1) <= (not(crs1(31)) and crs2(31) and result_alu(31)) or (crs1(31) and not(crs2(31)) and not(result_alu(31)));
+			else
+				nzvc(1) <= '0';
+			end if;
 			
 			-- CARRY
-			case op_alu is
-				when "010000" => nzvc(0) <= (crs1(31) and crs2(31)) or (not(result_alu(31)) and (crs1(31) or crs2(31)));
-				when "011000" => nzvc(0) <= (crs1(31) and crs2(31)) or (not(result_alu(31)) and (crs1(31) or crs2(31)));
-				when "010100" => nzvc(0) <= (crs1(31) and crs2(31) and result_alu(31)) or (not(crs1(31)) and (crs2(31) or result_alu(31)));
-				when "011100" => nzvc(0) <= (crs1(31) and crs2(31) and result_alu(31)) or (not(crs1(31)) and (crs2(31) or result_alu(31)));
-				when others => nzvc(0) <= '0';
-			end case;
+			if op_alu = "010000" or op_alu = "011000" then
+				nzvc(0) <= (crs1(31) and crs2(31)) or (not(result_alu(31)) and (crs1(31) or crs2(31)));
+			elsif op_alu = "010100" or op_alu = "011100" then
+				nzvc(0) <= (not(crs1(31)) and crs2(31)) or (result_alu(31) and (not(crs1(31)) or crs2(31)));
+			else
+				nzvc(0) <= '0';
+			end if;
 		
 		else
 			nzvc <= "0000";

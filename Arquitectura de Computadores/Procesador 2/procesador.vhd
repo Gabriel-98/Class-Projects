@@ -49,9 +49,23 @@ architecture arq_procesador of procesador is
 				  i : in  STD_LOGIC;
 				  result : out  STD_LOGIC_VECTOR (31 downto 0));
 	end component;
+	Component psr 
+		Port (  reset : in  STD_LOGIC;
+				  clock : in  STD_LOGIC;
+				  nzvc : in  STD_LOGIC_VECTOR (3 downto 0);
+				  c : out  STD_LOGIC);
+	end component;
+	Component psr_modifier
+		Port (  crs1 : in  STD_LOGIC_VECTOR (31 downto 0);
+				  crs2 : in  STD_LOGIC_VECTOR (31 downto 0);
+				  op_alu : in  STD_LOGIC_VECTOR (5 downto 0);
+				  result_alu : in  STD_LOGIC_VECTOR (31 downto 0);
+				  nzvc : out  STD_LOGIC_VECTOR (3 downto 0));
+	end component;
 	Component alu 
 		Port (  A : in  STD_LOGIC_VECTOR (31 downto 0);
 				  B : in  STD_LOGIC_VECTOR (31 downto 0);
+				  c : in  STD_LOGIC;
 				  op : in  STD_LOGIC_VECTOR (5 downto 0);
 				  result : out  STD_LOGIC_VECTOR (31 downto 0));
 	end component;
@@ -65,6 +79,8 @@ architecture arq_procesador of procesador is
 	signal crs1: STD_LOGIC_VECTOR(31 downto 0);
 	signal crs2: STD_LOGIC_VECTOR(31 downto 0);
 	signal crs2_or_sinm13: STD_LOGIC_VECTOR(31 downto 0);
+	signal nzvc: STD_LOGIC_VECTOR(3 downto 0);
+	signal c: STD_LOGIC;
 	signal result_alu: STD_LOGIC_VECTOR(31 downto 0);
 
 begin
@@ -114,9 +130,23 @@ begin
 		 i => instruction(13),
 		 result => crs2_or_sinm13
 	);
-	L9: alu Port Map(
+	L9: psr_modifier Port Map(
+		crs1 => crs1,
+		crs2 => crs2_or_sinm13,
+		op_alu => operation_alu,
+		result_alu => result_alu,
+		nzvc => nzvc
+	);
+	L10: psr Port Map(
+		reset => reset,
+		clock => clock,
+		nzvc => nzvc, 
+		c => c
+	);
+	L11: alu Port Map(
 		 A => crs1,
 		 B => crs2_or_sinm13,
+		 c => c,
 		 op => operation_alu,
 		 result => result_alu
 	);
