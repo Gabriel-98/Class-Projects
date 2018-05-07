@@ -1,10 +1,29 @@
+orn %g0, %g0, %g1			g0 = X"11111111"
 mov 51, %l0
-mov , %l1
-mov , %l2
-mov , %l3
-mov , %l4
-sll %l0, 6, %l5
-srl %l0, 3, %l5
-addcc ,
-addcc , ,
-add , ,
+mov 28, %l1
+mov 17, %l2
+restore %l0, %l1, %g0			ventana 1
+mov 104, %l0
+mov 55, %l1
+mov 8, %l2
+save %l0, %l1, %g0			ventana 0
+sll %l0, 6, %o0
+srl %l0, 3, %o1
+restore %l0, %l1, %g0			ventana 1
+sll %l0, 6, %o0
+srl %l0, 3, %o1
+save %l0, %l1, %g0			ventana 0
+mov 18, %i0
+mov 13, %i1
+restore %l0, %l1, %g0			ventana 1
+mov 7, %i0
+mov 23, %i1
+save %l0, %l1, %g0			ventana 0
+
+addx %l0, %l1, %l5
+addcc %g1, %g1, %g0 			modifico icc c=1
+addx %l0, %l1, %l5
+subx %l0, %l1, %l5
+addcc %g1, %g1, %g0			modifico icc c=1
+subx %l0, %l1, %l5
+
