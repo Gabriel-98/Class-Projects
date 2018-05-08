@@ -30,10 +30,22 @@ architecture arq_procesador of procesador is
 				  op3 : in  STD_LOGIC_VECTOR (5 downto 0);
 				  op_alu : out  STD_LOGIC_VECTOR (5 downto 0));
 	end component;
-	Component RegisterFile 
-		Port (  rs1 : in  STD_LOGIC_VECTOR (4 downto 0);
+	Component windows_manager 
+		Port (  cwp : in  STD_LOGIC_VECTOR (0 downto 0);
+				  rs1 : in  STD_LOGIC_VECTOR (4 downto 0);
 				  rs2 : in  STD_LOGIC_VECTOR (4 downto 0);
 				  rd : in  STD_LOGIC_VECTOR (4 downto 0);
+				  op : in  STD_LOGIC_VECTOR (1 downto 0);
+				  op3 : in  STD_LOGIC_VECTOR (5 downto 0);
+				  ncwp : out  STD_LOGIC_VECTOR (0 downto 0);
+				  nrs1 : out  STD_LOGIC_VECTOR (5 downto 0);
+				  nrs2 : out  STD_LOGIC_VECTOR (5 downto 0);
+				  nrd : out  STD_LOGIC_VECTOR (5 downto 0));
+	end component;
+	Component RegisterFile 
+		Port (  rs1 : in  STD_LOGIC_VECTOR (5 downto 0);
+				  rs2 : in  STD_LOGIC_VECTOR (5 downto 0);
+				  rd : in  STD_LOGIC_VECTOR (5 downto 0);
 				  dwr : in  STD_LOGIC_VECTOR (31 downto 0);
 				  reset : in  STD_LOGIC;
 				  crs1 : out  STD_LOGIC_VECTOR (31 downto 0);
@@ -53,6 +65,8 @@ architecture arq_procesador of procesador is
 		Port (  reset : in  STD_LOGIC;
 				  clock : in  STD_LOGIC;
 				  nzvc : in  STD_LOGIC_VECTOR (3 downto 0);
+				  ncwp : in  STD_LOGIC_VECTOR (0 downto 0);
+				  cwp : out  STD_LOGIC_VECTOR (0 downto 0);
 				  c : out  STD_LOGIC);
 	end component;
 	Component psr_modifier
@@ -79,6 +93,11 @@ architecture arq_procesador of procesador is
 	signal crs1: STD_LOGIC_VECTOR(31 downto 0);
 	signal crs2: STD_LOGIC_VECTOR(31 downto 0);
 	signal crs2_or_sinm13: STD_LOGIC_VECTOR(31 downto 0);
+	signal nrs1: STD_LOGIC_VECTOR(5 downto 0);
+	signal nrs2: STD_LOGIC_VECTOR(5 downto 0);
+	signal nrd: STD_LOGIC_VECTOR(5 downto 0);
+	signal cwp: STD_LOGIC_VECTOR(0 downto 0);
+	signal ncwp: STD_LOGIC_VECTOR(0 downto 0);
 	signal nzvc: STD_LOGIC_VECTOR(3 downto 0);
 	signal c: STD_LOGIC;
 	signal result_alu: STD_LOGIC_VECTOR(31 downto 0);
@@ -106,44 +125,58 @@ begin
 		 reset => reset,
 		 outInstruction => instruction
 	);
-	L5: ControlUnit Port Map(
+	L5: windows_manager Port Map(
+		 cwp => cwp,
+		 rs1 => instruction(18 downto 14),
+		 rs2 => instruction(4 downto 0),
+		 rd => instruction(29 downto 25),
+		 op => instruction(31 downto 30),
+		 op3 => instruction(24 downto 19),
+		 ncwp => ncwp,
+		 nrs1 => nrs1,
+		 nrs2 => nrs2,
+		 nrd => nrd
+	);
+	L6: ControlUnit Port Map(
 		 op => instruction(31 downto 30),
 		 op3 => instruction(24 downto 19),
 		 op_alu => operation_alu
 	);
-	L6: RegisterFile Port Map(
-		 rs1 => instruction(18 downto 14),
-		 rs2 => instruction(4 downto 0),
-		 rd => instruction(29 downto 25),
+	L7: RegisterFile Port Map(
+		 rs1 => nrs1,
+		 rs2 => nrs2,
+		 rd => nrd,
 		 dwr => result_alu,
 		 reset => reset,
 		 crs1 => crs1,
 		 crs2 => crs2
 	);
-	L7: seu Port Map(
+	L8: seu Port Map(
 		 sinm13 => instruction(12 downto 0),
 		 sinm32 => sinm32
 	);
-	L8: multiplexor Port Map(
+	L9: multiplexor Port Map(
 		 A => crs2,
 		 B => sinm32,
 		 i => instruction(13),
 		 result => crs2_or_sinm13
 	);
-	L9: psr_modifier Port Map(
+	L10: psr_modifier Port Map(
 		crs1 => crs1,
 		crs2 => crs2_or_sinm13,
 		op_alu => operation_alu,
 		result_alu => result_alu,
 		nzvc => nzvc
 	);
-	L10: psr Port Map(
+	L11: psr Port Map(
 		reset => reset,
 		clock => clock,
-		nzvc => nzvc, 
+		nzvc => nzvc,
+		ncwp => ncwp,
+		cwp => cwp,
 		c => c
 	);
-	L11: alu Port Map(
+	L12: alu Port Map(
 		 A => crs1,
 		 B => crs2_or_sinm13,
 		 c => c,

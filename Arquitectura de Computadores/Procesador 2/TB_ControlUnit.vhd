@@ -50,6 +50,10 @@ BEGIN
       wait for 20 ns;
 		op3 <= "100110";
       wait for 20 ns;
+		op3 <= "111100";
+		wait for 20 ns;
+		op3 <= "111101";
+		wait for 20 ns;
    end process;
 
 END;

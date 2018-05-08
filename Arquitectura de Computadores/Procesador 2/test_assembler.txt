@@ -1,29 +1,34 @@
-orn %g0, %g0, %g1			g0 = X"11111111"
-mov 51, %l0
-mov 28, %l1
-mov 17, %l2
-restore %l0, %l1, %g0			ventana 1
-mov 104, %l0
-mov 55, %l1
-mov 8, %l2
-save %l0, %l1, %g0			ventana 0
-sll %l0, 6, %o0
-srl %l0, 3, %o1
-restore %l0, %l1, %g0			ventana 1
-sll %l0, 6, %o0
-srl %l0, 3, %o1
-save %l0, %l1, %g0			ventana 0
-mov 18, %i0
-mov 13, %i1
-restore %l0, %l1, %g0			ventana 1
-mov 7, %i0
-mov 23, %i1
-save %l0, %l1, %g0			ventana 0
-
-addx %l0, %l1, %l5
+orn %g0, %g0, %g1			r0 = X"11111111" = -1
+mov 51, %l0				r16 = 51
+mov 28, %l1				r17 = 28
+mov 17, %l2				r18 = 12
+restore %g0, %g0, %g0			ventana 1
+mov 104, %l0				r32 = 104
+mov 55, %l1				r33 = 55
+mov 8, %l2				r34 = 8
+save %g0, %g0, %g0			ventana 0
+sll %l0, 6, %o0				r8 = 3264
+srl %l0, 3, %o1				r9 = 6
+restore %g0, %g0, %g0			ventana 1
+sll %l0, 6, %o0				r24 = 6656
+srl %l0, 3, %o1				r25 = 13
+save %g0, %g0, %g0			ventana 0
+mov 18, %i0				r24 = 18
+mov 13, %i1				r25 = 13
+restore %g0, %g0, %g0			ventana 1
+mov 7, %i0				r8 = 7
+mov 23, %i1				r9 = 23
+save %g0, %g0, %g0			ventana 0
+addx %l0, %l1, %l5			r20 = 79
 addcc %g1, %g1, %g0 			modifico icc c=1
-addx %l0, %l1, %l5
-subx %l0, %l1, %l5
+addx %l0, %l1, %l5			80
+subx %l0, %l1, %l5			r20 = 23
 addcc %g1, %g1, %g0			modifico icc c=1
-subx %l0, %l1, %l5
+subx %l0, %l1, %l5			r20 = 22
+add %i0, %i1, %o2			r10 = 6669
+sub %i1, %i0, %o3			r11 = -6643
+restore %g0, %g0, %g0			ventana 1
+sub %i2, %i3, %o4			r28 = 13312
+save %g0, %g0, %g0			ventana 0
+add %i4, 688, %o5			r13 = 14000
 

@@ -36,6 +36,8 @@ begin
 				when "011100" => op_alu <= "011100";	-- subxcc
 				when "100101" => op_alu <= "100101";	-- sll
 				when "100110" => op_alu <= "100110";	-- slr
+				when "111100" => op_alu <= "000000";	-- save
+				when "111101" => op_alu <= "000000";	-- restore
 				when others => op_alu <= "111111";
 			end case;
 		else
