@@ -1,0 +1,19 @@
+		mov 23, %l0		operando1
+		mov 75, %l1		operando2
+		mov %l0, %l2		copia del operando1
+		mov %l1, %l3		copia del operando2
+		mov 0, %o0		inicializa la variable del resultado
+		ba while		envia al inicio del while (PC + 11)
+		add %g0, %g0, %g0	equivale a un nop
+InstWhile:	srl %l3, 1, %l4		divide por 2 a la copia del operando2
+		sll %l4, 1, %l5		multiplica por 2 el valor de la instruccion anterior
+		cmp %l3, %l5		al actual va
+		be nosumar		con las ultimas 4 instrucciones se halla (copia de operando2 % 2) (PC + 3)		
+		add %g0, %g0, %g0	equivale a un nop
+		add %o0, %l2, %o0	adicionar al resultado		
+nosumar:	mov %l4, %l3		operando2 es igual a su mitad
+		sll %l2, 1, %l2		multiplica por 2 a la copia del operando1
+while:		cmp %l3, 0		condicion de while
+		bg InstWhile		si (>) hace salto a ejecutar instrucciones del while (PC - 9)
+		add %g0, %g0, %g0	equivale a un nop
+		mov %o0, %o0		resultado de la multiplicacion
