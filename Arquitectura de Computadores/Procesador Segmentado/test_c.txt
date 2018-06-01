@@ -1,0 +1,29 @@
+int multiplicacion(int a, int b){
+	int ax=a, b2=b, mitad, doble, temp, mult=0;
+	while(b2 > 0){
+		mitad = b2 >> 1;
+		doble = mitad << 1;
+		if(b2 - doble == 1){
+			temp = mult + ax;
+			mult = temp;
+		}
+		b2 = mitad;
+		temp = ax << 1;
+		ax = temp;
+	}
+	return mult;
+}
+
+int main(){
+	int a,b,ans;
+	a=23;
+	b=75;
+	ans= multiplicacion(a,b);
+}
+
+ax	l0
+b2	l1
+mitad	l2
+doble	l3
+temp	l4
+mult	o0

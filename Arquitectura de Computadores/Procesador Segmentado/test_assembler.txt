@@ -1,0 +1,34 @@
+		mov 23, %l0			r[16] = 23, operando1
+		st %l0, %g0, 0 			DM[0] = 23
+		mov 75, %l0			r[16] = 75, operando2
+		st %l0, %g0, 1			DM[1] = 75
+		call multiplicacion		Llama la funcion multiplicacion (PC + 7)
+		or %g0, %g0, %g0		nop
+		ld %g0, 0, %l0			r[16] = operando1
+		ld %g0, 1, %l1			r[17] = operando2
+		ld %g0, 2, %o0			r[8] = resultado
+		ba fin				envia a la instruccion final del programa (PC + 23)
+		or %g0, %g0, %g0		nop
+multiplicacion:	ld %g0, 0, %l0			se carga el primer operando en r[16] = 23
+		ld %g0, 1, %l1			se carga el segundo operando en r[17] = 75
+		mov 0, %l5			se inicializa la variable del resultado r[21] = 0
+		ba while			envia al inicio del while (PC + 12)
+		or %g0, %g0, %g0		nop
+InstWhile:	srl %l1, 1, %l2			divide por 2 a la copia del operando2
+		sll %l2, 1, %l3			multiplica por 2 el resultado de la instruccion anterior
+		cmp %l1, %l3			se resta para hallar el siguiente bit del operando2
+		be nosumar			con las ultimas 4 instrucciones se halla (copia de operando2 % 2) (PC + 4)
+		or %g0, %g0, %g0		nop
+		add %l5, %l0, %l4		se adiciona operando1*(2^i)
+		mov %l4, %l5			se actualiza la variable del resultado 
+nosumar:	mov %l2, %l1			operando2 es igual a la mitad
+		sll %l0, 1, %l4			se multiplica por 2 el operando1
+		mov %l4, %l0			se actualiza el operando1
+while:		cmp %l1, 0			operando2 - 0
+		bg InstWhile			mientras el operando2 sea mayor a cero (PC - 11)
+		or %g0, %g0, %g0		nop
+		st %l5, %g0, 2			DM[2] = resultado
+		jmpl %o7, 2, %g0		se dirige 2 posiciones despues de la instruccion de llamado
+		or %g0, %g0, %g0		nop
+fin:		or %g0, %g0, %g0		nop
+		
