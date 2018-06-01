@@ -13,6 +13,7 @@ ARCHITECTURE behavior OF TB_psr IS
          nzvc : IN  std_logic_vector(3 downto 0);
 			ncwp : IN  std_logic_vector(0 downto 0);
 			cwp : OUT  std_logic_vector(0 downto 0);
+			icc : OUT  std_logic_vector(3 downto 0);
          c : OUT  std_logic
         );
     END COMPONENT;
@@ -23,6 +24,7 @@ ARCHITECTURE behavior OF TB_psr IS
 	signal ncwp : std_logic_vector(0 downto 0) := (others => '0');
 
 	signal cwp : std_logic_vector(0 downto 0);
+	signal icc : std_logic_vector(3 downto 0);
    signal c : std_logic;
 
    constant clock_period : time := 20 ns;
@@ -35,6 +37,7 @@ BEGIN
           nzvc => nzvc,
 			 ncwp => ncwp,
 			 cwp => cwp,
+			 icc => icc,
           c => c
         );
 

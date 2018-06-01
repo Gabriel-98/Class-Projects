@@ -12,7 +12,8 @@ entity windows_manager is
            ncwp : out  STD_LOGIC_VECTOR (0 downto 0);
            nrs1 : out  STD_LOGIC_VECTOR (5 downto 0);
            nrs2 : out  STD_LOGIC_VECTOR (5 downto 0);
-           nrd : out  STD_LOGIC_VECTOR (5 downto 0));
+           nrd : out  STD_LOGIC_VECTOR (5 downto 0);
+			  ro7 : out  STD_LOGIC_VECTOR (5 downto 0));
 end windows_manager;
 
 architecture arq_windows_manager of windows_manager is
@@ -25,6 +26,7 @@ begin
 			nrs1 <= "000000";
 			nrs2 <= "000000";
 			nrd <= "000000";
+			ro7 <= "001111";
 		else
 			-- nrs1
 			if rs1 >= "00000" and rs1 <= "00111" then
@@ -52,6 +54,9 @@ begin
 			else
 				nrd <= rd - (cwp * "10000");
 			end if;
+			
+			-- ro7
+			ro7 <= "001111" + (cwp * "10000");
 			
 			-- ncwp
 			case op3 is

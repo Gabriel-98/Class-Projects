@@ -7,6 +7,7 @@ entity psr is
 			  nzvc : in  STD_LOGIC_VECTOR (3 downto 0);
 			  ncwp : in  STD_LOGIC_VECTOR (0 downto 0);
 			  cwp : out  STD_LOGIC_VECTOR (0 downto 0);
+			  icc : out  STD_LOGIC_VECTOR (3 downto 0);
            c : out  STD_LOGIC);
 end psr;
 
@@ -16,9 +17,11 @@ begin
 	process(clock,reset,nzvc,ncwp)
 	begin
 		if reset = '1' then
+			icc <= "0000";
 			c <= '0';
 			cwp <= "0";
 		elsif clock'event and clock = '1' then
+			icc <= nzvc;
 			c <= nzvc(0);
 			cwp <= ncwp;
 		end if;

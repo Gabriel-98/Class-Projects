@@ -20,7 +20,7 @@ architecture arq_RegisterFile of RegisterFile is
 	signal RF : ram_type:=(others => X"00000000");
 
 begin
-	process(rs1,rs2,rd,dwr,reset,RF)
+	process(rs1,rs2,rd,dwr,wren,reset,RF)
 	begin
 		if reset = '1' then
 			RF <= (others => X"00000000");
@@ -28,12 +28,12 @@ begin
 			crs2 <= X"00000000";
 			crd <= X"00000000";
 		else
-			if rd /= "000000" and wren = '1' then
-				RF(conv_integer(rd)) <= dwr;
-			end if;
 			crs1 <= RF(conv_integer(rs1));
 			crs2 <= RF(conv_integer(rs2));
 			crd <= RF(conv_integer(rd));
+			if rd /= "000000" and wren = '1' then
+				RF(conv_integer(rd)) <= dwr;
+			end if;
 		end if;
 	end process;
 

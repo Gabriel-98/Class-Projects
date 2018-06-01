@@ -13,7 +13,6 @@ ARCHITECTURE behavior OF TB_ControlUnit IS
          icc : IN  std_logic_vector(3 downto 0);
          cond : IN  std_logic_vector(3 downto 0);
          wrenmem : OUT  std_logic;
-         rdenmem : OUT  std_logic;
          wren : OUT  std_logic;
          rfsource : OUT  std_logic_vector(1 downto 0);
          pcsource : OUT  std_logic_vector(1 downto 0);
@@ -28,7 +27,6 @@ ARCHITECTURE behavior OF TB_ControlUnit IS
    signal cond : std_logic_vector(3 downto 0) := (others => '0');
 
    signal wrenmem : std_logic;
-   signal rdenmem : std_logic;
    signal wren : std_logic;
    signal rfsource : std_logic_vector(1 downto 0);
    signal pcsource : std_logic_vector(1 downto 0);
@@ -43,7 +41,6 @@ BEGIN
           icc => icc,
           cond => cond,
           wrenmem => wrenmem,
-          rdenmem => rdenmem,
           wren => wren,
           rfsource => rfsource,
           pcsource => pcsource,
@@ -52,7 +49,10 @@ BEGIN
         );
 
    stim_proc: process
-   begin		
+   begin	
+		op <= "01";					-- FORMATO 1
+		op3 <= "000000";
+		wait for 20 ns;
       op <= "00";					-- FORMATO 2
 		icc <= "0000";
 		cond <= "1000";			-- ba
@@ -71,6 +71,36 @@ BEGIN
 		wait for 20 ns;
 		icc <= "0100";
 		cond <= "0010";			-- ble
+		wait for 20 ns;
+		op <= "10";					-- FORMATO 3
+		op3 <= "000001";			-- and
+		icc <= "0000";
+		cond <= "0000";
+		wait for 20 ns;
+		op3 <= "010001";			-- andcc
+		wait for 20 ns;
+		op3 <= "000010";			-- or
+		wait for 20 ns;
+		op3 <= "010010";			-- orcc
+		wait for 20 ns;
+		op3 <= "000011";			-- xor
+		wait for 20 ns;
+		op3 <= "010011";			-- xorcc
+		wait for 20 ns;
+		op3 <= "000000";			-- add
+		wait for 20 ns;
+		op3 <= "000100";			-- sub
+		wait for 20 ns;
+		op3 <= "111100";			-- save
+		wait for 20 ns;
+		op3 <= "111101";			-- restore
+		wait for 20 ns;
+		op3 <= "111000";			-- jmpl
+		wait for 20 ns;
+		op <= "11";					-- FORMATO 4
+		op3 <= "000000";			-- load
+		wait for 20 ns;
+		op3 <= "000100";			-- store
 		wait for 20 ns;
    end process;
 

@@ -1,14 +1,17 @@
 int multiplicacion(int a, int b){
-	int k=a,c=b,x,y,ans=0;
-	while(c>0){
-		x = c >> 1;
-		y = x << 1;
-		if(c-y == 1)
-		ans += k;
-		c = x;
-		k <<= 1;
+	int ax=a, b2=b, mitad, doble, temp, mult=0;
+	while(b2 > 0){
+		mitad = b2 >> 1;
+		doble = mitad << 1;
+		if(b2 - doble == 1){
+			temp = mult + ax;
+			mult = temp;
+		}
+		b2 = mitad;
+		temp = ax << 1;
+		ax = temp;
 	}
-	return ans;
+	return mult;
 }
 
 int main(){
@@ -18,18 +21,9 @@ int main(){
 	ans= multiplicacion(a,b);
 }
 
-75 = 1001011
-
-(64+8+2+1)
-1472+184+46+23
-
-75	1
-37	1
-18	0
-9	1
-4	0
-2	0
-1	1
-
-mov 23, %l0
-mov 75, %l1
+ax	l0
+b2	l1
+mitad	l2
+doble	l3
+temp	l4
+mult	o0

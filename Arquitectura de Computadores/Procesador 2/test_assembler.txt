@@ -13,18 +13,18 @@ restore %g0, %g0, %g0			ventana 1
 sll %l0, 6, %o0				r24 = 6656
 srl %l0, 3, %o1				r25 = 13
 save %g0, %g0, %g0			ventana 0
-mov 18, %i0				r24 = 18
-mov 13, %i1				r25 = 13
+mov 18, %o0				r8 = 18
+mov 13, %o1				r9 = 13
 restore %g0, %g0, %g0			ventana 1
 mov 7, %i0				r8 = 7
 mov 23, %i1				r9 = 23
 save %g0, %g0, %g0			ventana 0
 addx %l0, %l1, %l5			r20 = 79
 addcc %g1, %g1, %g0 			modifico icc c=1
-addx %l0, %l1, %l5			80
-subx %l0, %l1, %l5			r20 = 23
+addx %l0, %l1, %l5			r21 = 80
+subx %l0, %l1, %l5			r21 = 23
 addcc %g1, %g1, %g0			modifico icc c=1
-subx %l0, %l1, %l5			r20 = 22
+subx %l0, %l1, %l5			r21 = 22
 add %i0, %i1, %o2			r10 = 6669
 sub %i1, %i0, %o3			r11 = -6643
 restore %g0, %g0, %g0			ventana 1

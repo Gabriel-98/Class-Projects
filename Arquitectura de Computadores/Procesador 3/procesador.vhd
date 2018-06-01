@@ -20,6 +20,47 @@ architecture arq_procesador of procesador is
 				  B : in  STD_LOGIC_VECTOR (31 downto 0);
 				  C : out  STD_LOGIC_VECTOR (31 downto 0));
 	end component;
+	Component seu13 
+		Port (  sinm13 : in  STD_LOGIC_VECTOR (12 downto 0);
+				  sinm32 : out  STD_LOGIC_VECTOR (31 downto 0));
+	end component;
+	Component seu22 
+		Port (  sinm22 : in  STD_LOGIC_VECTOR (21 downto 0);
+				  sinm32 : out  STD_LOGIC_VECTOR (31 downto 0));
+	end component;
+	Component seu30 
+		Port (  sinm30 : in  STD_LOGIC_VECTOR (29 downto 0);
+				  sinm32 : out  STD_LOGIC_VECTOR (31 downto 0));
+	end component;
+	Component mux_op2 
+		Port (  A : in  STD_LOGIC_VECTOR (31 downto 0);
+				  B : in  STD_LOGIC_VECTOR (31 downto 0);
+				  i : in  STD_LOGIC;
+				  result : out  STD_LOGIC_VECTOR (31 downto 0));
+	end component;
+	Component mux_nrd 
+		Port (  rd : in  STD_LOGIC_VECTOR (5 downto 0);
+				  ro7 : in  STD_LOGIC_VECTOR (5 downto 0);
+              rfdest : in  STD_LOGIC;
+				  nrd : out  STD_LOGIC_VECTOR (5 downto 0));
+	end component;
+	Component mux_dwr 
+		Port (  datatomem : in  STD_LOGIC_VECTOR (31 downto 0);
+				  result_alu : in  STD_LOGIC_VECTOR (31 downto 0);
+				  pc : in  STD_LOGIC_VECTOR (31 downto 0);
+				  rfsource :in  STD_LOGIC_VECTOR (1 downto 0);
+				  wrenin : in  STD_LOGIC;
+				  wrenout : out  STD_LOGIC;
+				  datatoreg : out  STD_LOGIC_VECTOR (31 downto 0));
+	end component;
+	Component mux_npc 
+		Port (  pc_call : in  STD_LOGIC_VECTOR (31 downto 0);
+				  pc_branch : in  STD_LOGIC_VECTOR (31 downto 0);
+				  pc : in  STD_LOGIC_VECTOR (31 downto 0);
+				  result_alu : in  STD_LOGIC_VECTOR (31 downto 0);
+				  pcsource : in  STD_LOGIC_VECTOR (1 downto 0);
+				  npc : out  STD_LOGIC_VECTOR (31 downto 0));
+	end component;
 	Component InstructionMemory 
 		Port (  address : in  STD_LOGIC_VECTOR (31 downto 0);
 				  reset : in  STD_LOGIC;
@@ -28,10 +69,14 @@ architecture arq_procesador of procesador is
 	Component ControlUnit 
 		Port (  op : in  STD_LOGIC_VECTOR (1 downto 0);
 				  op3 : in  STD_LOGIC_VECTOR (5 downto 0);
+				  icc : in  STD_LOGIC_VECTOR (3 downto 0);
+				  cond : in  STD_LOGIC_VECTOR (3 downto 0);
 				  wrenmem : out  STD_LOGIC;
-				  rdenmem : out  STD_LOGIC;
+				--  rdenmem : out  STD_LOGIC;
 				  wren : out  STD_LOGIC;
 				  rfsource : out  STD_LOGIC_VECTOR (1 downto 0);
+				  pcsource : out  STD_LOGIC_VECTOR (1 downto 0);
+				  rfdest : out  STD_LOGIC;
 				  op_alu : out  STD_LOGIC_VECTOR (5 downto 0));
 	end component;
 	Component windows_manager 
@@ -44,7 +89,8 @@ architecture arq_procesador of procesador is
 				  ncwp : out  STD_LOGIC_VECTOR (0 downto 0);
 				  nrs1 : out  STD_LOGIC_VECTOR (5 downto 0);
 				  nrs2 : out  STD_LOGIC_VECTOR (5 downto 0);
-				  nrd : out  STD_LOGIC_VECTOR (5 downto 0));
+				  nrd : out  STD_LOGIC_VECTOR (5 downto 0);
+				  ro7 : out  STD_LOGIC_VECTOR (5 downto 0));
 	end component;
 	Component RegisterFile 
 		Port (  rs1 : in  STD_LOGIC_VECTOR (5 downto 0);				  
@@ -57,22 +103,13 @@ architecture arq_procesador of procesador is
 				  crs2 : out  STD_LOGIC_VECTOR (31 downto 0);
 				  crd : out  STD_LOGIC_VECTOR (31 downto 0));
 	end component;
-	Component seu13 
-		Port (  sinm13 : in  STD_LOGIC_VECTOR (12 downto 0);
-				  sinm32 : out  STD_LOGIC_VECTOR (31 downto 0));
-	end component;
-	Component mux_op2 
-		Port (  A : in  STD_LOGIC_VECTOR (31 downto 0);
-				  B : in  STD_LOGIC_VECTOR (31 downto 0);
-				  i : in  STD_LOGIC;
-				  result : out  STD_LOGIC_VECTOR (31 downto 0));
-	end component;
 	Component psr 
 		Port (  reset : in  STD_LOGIC;
 				  clock : in  STD_LOGIC;
 				  nzvc : in  STD_LOGIC_VECTOR (3 downto 0);
 				  ncwp : in  STD_LOGIC_VECTOR (0 downto 0);
 				  cwp : out  STD_LOGIC_VECTOR (0 downto 0);
+				  icc : out  STD_LOGIC_VECTOR (3 downto 0);
 				  c : out  STD_LOGIC);
 	end component;
 	Component psr_modifier
@@ -90,23 +127,16 @@ architecture arq_procesador of procesador is
 				  result : out  STD_LOGIC_VECTOR (31 downto 0));
 	end component;
 	Component DataMemory 
-		Port (  result_alu : in  STD_LOGIC_VECTOR (31 downto 0);
+		Port (  result_alu : in  STD_LOGIC_VECTOR (4 downto 0);
 				  crd : in  STD_LOGIC_VECTOR (31 downto 0);
 				  wrenmem : in  STD_LOGIC;
-				  rdenmem : in  STD_LOGIC;
 				  reset : in  STD_LOGIC;
 				  datatomem : out  STD_LOGIC_VECTOR (31 downto 0));
-	end component;
-	Component mux_dwr 
-		Port (  datatomem : in  STD_LOGIC_VECTOR (31 downto 0);
-				  result_alu : in  STD_LOGIC_VECTOR (31 downto 0);
-				  pc : in  STD_LOGIC_VECTOR (31 downto 0);
-				  rfsource :in  STD_LOGIC_VECTOR (1 downto 0);
-				  datatoreg : out  STD_LOGIC_VECTOR (31 downto 0));
 	end component;
 	
 	signal pc: STD_LOGIC_VECTOR(31 downto 0);
 	signal npc: STD_LOGIC_VECTOR(31 downto 0);
+	signal new_npc: STD_LOGIC_VECTOR(31 downto 0);
 	signal dir: STD_LOGIC_VECTOR(31 downto 0);
 	signal instruction: STD_LOGIC_VECTOR(31 downto 0);
 	signal operation_alu: STD_LOGIC_VECTOR(5 downto 0);
@@ -115,20 +145,29 @@ architecture arq_procesador of procesador is
 	signal crs2: STD_LOGIC_VECTOR(31 downto 0);
 	signal crs2_or_sinm13: STD_LOGIC_VECTOR(31 downto 0);
 	signal crd: STD_LOGIC_VECTOR(31 downto 0);
+	signal rd: STD_LOGIC_VECTOR(5 downto 0);
+	signal ro7: STD_LOGIC_VECTOR(5 downto 0);
 	signal nrs1: STD_LOGIC_VECTOR(5 downto 0);
 	signal nrs2: STD_LOGIC_VECTOR(5 downto 0);
 	signal nrd: STD_LOGIC_VECTOR(5 downto 0);
 	signal cwp: STD_LOGIC_VECTOR(0 downto 0);
 	signal ncwp: STD_LOGIC_VECTOR(0 downto 0);
 	signal nzvc: STD_LOGIC_VECTOR(3 downto 0);
+	signal icc: STD_LOGIC_VECTOR(3 downto 0);
 	signal c: STD_LOGIC;
 	signal result_alu: STD_LOGIC_VECTOR(31 downto 0);
 	signal wren:  STD_LOGIC;
+	signal wren2:  STD_LOGIC;
 	signal wrenmem: STD_LOGIC;
-	signal rdenmem: STD_LOGIC;
+	signal rfdest: STD_LOGIC;
 	signal rfsource: STD_LOGIC_VECTOR(1 downto 0);
+	signal pcsource: STD_LOGIC_VECTOR(1 downto 0);
 	signal datatomem: STD_LOGIC_VECTOR(31 downto 0);
 	signal datatoreg: STD_LOGIC_VECTOR(31 downto 0);
+	signal disp30: STD_LOGIC_VECTOR(31 downto 0);
+	signal disp22: STD_LOGIC_VECTOR(31 downto 0);
+	signal pc_call: STD_LOGIC_VECTOR(31 downto 0);
+	signal pc_branch: STD_LOGIC_VECTOR(31 downto 0);
 
 begin
 	L1: sumador Port Map(
@@ -137,7 +176,7 @@ begin
 		 C => dir
 	);
 	L2: ProgramCounter Port Map(
-		 address => dir,
+		 address => new_npc,
 		 reset => reset,
 		 clock => clock,
 		 PCout => npc
@@ -153,6 +192,7 @@ begin
 		 reset => reset,
 		 outInstruction => instruction
 	);
+	-- Z1
 	L5: windows_manager Port Map(
 		 cwp => cwp,
 		 rs1 => instruction(18 downto 14),
@@ -163,73 +203,115 @@ begin
 		 ncwp => ncwp,
 		 nrs1 => nrs1,
 		 nrs2 => nrs2,
-		 nrd => nrd
+		 nrd => rd,
+		 ro7 => ro7
 	);
 	L6: ControlUnit Port Map(
 		 op => instruction(31 downto 30),
 		 op3 => instruction(24 downto 19),
+		 icc => icc,
+		 cond => instruction(28 downto 25),
 		 wrenmem => wrenmem,
-		 rdenmem => rdenmem,
 		 wren => wren,
 		 rfsource => rfsource,
+		 pcsource => pcsource,
+		 rfdest => rfdest,
 		 op_alu => operation_alu
 	);
-	L7: RegisterFile Port Map(
+	L7: mux_nrd Port Map(
+		 rd => rd,
+		 ro7 => ro7,
+       rfdest => rfdest,
+		 nrd => nrd
+	);
+	L8: RegisterFile Port Map(
 		 rs1 => nrs1,
 		 rs2 => nrs2,
 		 rd => nrd,
 		 dwr => datatoreg,
-		 wren => wren,
+		 wren => wren2,
 		 reset => reset,
 		 crs1 => crs1,
 		 crs2 => crs2,
 		 crd => crd
 	);
-	L8: seu13 Port Map(
+	L9: seu13 Port Map(
 		 sinm13 => instruction(12 downto 0),
 		 sinm32 => sinm32
 	);
-	L9: mux_op2 Port Map(
+	L10: seu30 Port Map(
+		 sinm30 => instruction(29 downto 0),
+		 sinm32 => disp30
+	);
+	L11: seu22 Port Map(
+		 sinm22 => instruction(21 downto 0),
+		 sinm32 => disp22
+	);
+	-- Z2
+	L12: mux_op2 Port Map(
 		 A => crs2,
 		 B => sinm32,
 		 i => instruction(13),
 		 result => crs2_or_sinm13
 	);
-	L10: psr_modifier Port Map(
+	L13: psr_modifier Port Map(
 		crs1 => crs1,
 		crs2 => crs2_or_sinm13,
 		op_alu => operation_alu,
 		result_alu => result_alu,
 		nzvc => nzvc
 	);
-	L11: psr Port Map(
+	L14: psr Port Map(
 		reset => reset,
 		clock => clock,
 		nzvc => nzvc,
 		ncwp => ncwp,
 		cwp => cwp,
+		icc => icc,
 		c => c
 	);
-	L12: alu Port Map(
+	L15: alu Port Map(
 		 A => crs1,
 		 B => crs2_or_sinm13,
 		 c => c,
 		 op => operation_alu,
 		 result => result_alu
 	);
-	L13: DataMemory Port Map(
+	L16: sumador Port Map(
+		 A => pc,
+		 B => disp30,
+		 C => pc_call
+	);
+	L17: sumador Port Map(
+		 A => pc,
+		 B => disp22,
+		 C => pc_branch
+	);
+	L18: mux_npc Port Map(
+		 pc_call => pc_call,
+		 pc_branch => pc_branch,
+		 pc => dir,
 		 result_alu => result_alu,
+		 pcsource => pcsource,
+		 npc => new_npc
+	);
+	
+	-- Z3
+	L19: DataMemory Port Map(
+		 result_alu => result_alu(4 downto 0),
        crd => crd,
        wrenmem => wrenmem,
-       rdenmem => rdenmem,
        reset => reset,
        datatomem => datatomem
 	);
-	L14: mux_dwr Port Map(
+	-- Z4
+	L20: mux_dwr Port Map(
 		 datatomem => datatomem,
        result_alu => result_alu,
        pc => pc,
        rfsource => rfsource,
+		 wrenin => wren,
+		 wrenout => wren2,
        datatoreg => datatoreg
 	);
 	

@@ -42,13 +42,13 @@ BEGIN
 		pc_branch <= X"0000000A";
 		result_alu <= X"0000000F";
 		pc <= X"00000014";
-		pcsource <= "00";
+		pcsource <= "11";
       wait for 20 ns;
 		pcsource <= "01";
       wait for 20 ns;
 		pcsource <= "10";
       wait for 20 ns;
-		pcsource <= "11";
+		pcsource <= "00";
       wait for 20 ns;
    end process;
 

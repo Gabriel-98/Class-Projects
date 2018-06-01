@@ -11,7 +11,7 @@ end ProgramCounter;
 architecture arq_ProgramCounter of ProgramCounter is
 
 begin
-	process(clock,reset)
+	process(address,clock,reset)
 	begin
 		if reset = '1' then
 			PCout <= X"00000000";

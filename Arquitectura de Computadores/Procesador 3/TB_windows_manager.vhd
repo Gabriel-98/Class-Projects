@@ -17,7 +17,8 @@ ARCHITECTURE behavior OF TB_windows_manager IS
          ncwp : OUT  std_logic_vector(0 downto 0);
          nrs1 : OUT  std_logic_vector(5 downto 0);
          nrs2 : OUT  std_logic_vector(5 downto 0);
-         nrd : OUT  std_logic_vector(5 downto 0)
+         nrd : OUT  std_logic_vector(5 downto 0);
+			ro7 : OUT  std_logic_vector(5 downto 0)
         );
     END COMPONENT;
     
@@ -32,6 +33,7 @@ ARCHITECTURE behavior OF TB_windows_manager IS
    signal nrs1 : std_logic_vector(5 downto 0);
    signal nrs2 : std_logic_vector(5 downto 0);
    signal nrd : std_logic_vector(5 downto 0);
+	signal ro7 : std_logic_vector(5 downto 0);
  
 BEGIN
 
@@ -45,7 +47,8 @@ BEGIN
           ncwp => ncwp,
           nrs1 => nrs1,
           nrs2 => nrs2,
-          nrd => nrd
+          nrd => nrd,
+			 ro7 => ro7
         );
 
    stim_proc: process

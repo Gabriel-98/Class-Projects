@@ -7,7 +7,6 @@ entity ControlUnit is
 			  icc : in  STD_LOGIC_VECTOR (3 downto 0);
 			  cond : in  STD_LOGIC_VECTOR (3 downto 0);
 			  wrenmem : out  STD_LOGIC;								-- Habilita escritura en Data Memory
-			  rdenmem : out  STD_LOGIC;								-- Habilita lectura en Data Memory
 			  wren : out  STD_LOGIC;									-- Habilita escritura en register file
 			  rfsource : out  STD_LOGIC_VECTOR (1 downto 0);	-- Selecciona si result_alu, data memory o pc se envia al RF
            pcsource : out  STD_LOGIC_VECTOR (1 downto 0);	-- Determina la nueva direccion en la lista de instrucciones 
@@ -16,12 +15,6 @@ entity ControlUnit is
 end ControlUnit;
 
 architecture arq_ControlUnit of ControlUnit is
-
-	signal n: STD_LOGIC;
-	signal z: STD_LOGIC;
-	signal v: STD_LOGIC;
-	signal c: STD_LOGIC;
-	signal result_icc: STD_LOGIC;
 
 begin
 	process(op,op3,icc,cond)
@@ -70,27 +63,23 @@ begin
 		if op = "01" then														-- FORMATO 1
 			pcsource <= "11";													-- call
 		elsif op = "00" then 												-- FORMATO 2
-			n <= icc(3);
-			z <= icc(2);
-			v <= icc(1);
-			c <= icc(0);
 			case cond is
-				when "1000" => pcsource <= z & v;						-- ba
-				when "0000" => pcsource <= z & v;						-- bn
-				when "1001" => pcsource <= z & v;					-- bne
-				when "0001" => pcsource <= z & v;							-- be
-				when "1010" => pcsource <= z & v;	-- bg
-				when "0010" => pcsource <= z & v;			-- ble
-				when "1011" => pcsource <= '0' & not(icc(3) xor icc(1));			-- bge
-				when "0011" => pcsource <= '0' & (n xor v);					-- bl
-				when "1100" => pcsource <= '0' & not(c or z);				-- bgu
-				when "0100" => pcsource <= '0' & (c or z);					-- bleu
-				when "1101" => pcsource <= '0' & not(c);					-- bcc
-				when "0101" => pcsource <= '0' & c;							-- bcs
-				when "1110" => pcsource <= '0' & not(n);					-- bpos
-				when "0110" => pcsource <= '0' & n;							-- bneg
-				when "1111" => pcsource <= '0' & not(v);					-- bvc
-				when "0111" => pcsource <= '0' & v;							-- bvs
+				when "1000" => pcsource <= '0' & '1';												-- ba
+				when "0000" => pcsource <= '0' & '0';												-- bn
+				when "1001" => pcsource <= '0' & not(icc(2));									-- bne
+				when "0001" => pcsource <= '0' & icc(2);											-- be
+				when "1010" => pcsource <= '0' & not(icc(2) or (icc(3) xor icc(1)));		-- bg
+				when "0010" => pcsource <= '0' & (icc(2) or (icc(3) xor icc(1)));			-- ble
+				when "1011" => pcsource <= '0' & not(icc(3) xor icc(1));						-- bge
+				when "0011" => pcsource <= '0' & (icc(3) xor icc(1));							-- bl
+				when "1100" => pcsource <= '0' & not(icc(0) or icc(2));						-- bgu
+				when "0100" => pcsource <= '0' & (icc(0) or icc(2));							-- bleu
+				when "1101" => pcsource <= '0' & not(icc(0));									-- bcc
+				when "0101" => pcsource <= '0' & icc(0);											-- bcs
+				when "1110" => pcsource <= '0' & not(icc(3));									-- bpos
+				when "0110" => pcsource <= '0' & icc(3);											-- bneg
+				when "1111" => pcsource <= '0' & not(icc(1));									-- bvc
+				when "0111" => pcsource <= '0' & icc(1);											-- bvs
 				when others => pcsource <= '0' & '0';
 			end case;
 		elsif op = "10" then													-- FORMATO 3
@@ -105,40 +94,33 @@ begin
 		if op = "00" then														-- BRANCH
 			rfsource <= "11";
 			wrenmem <= '0';
-			rdenmem <= '0';
 			wren <= '0';
 		elsif op = "01" then													-- CALL
 			rfsource <= "00";
 			wrenmem <= '0';
-			rdenmem <= '0';
 			wren <= '1';
 		elsif op = "10" then
 			if op3 = "111000" then											-- JMPL
 				rfsource <= "00";
 				wrenmem <= '0';
-				rdenmem <= '0';
 				wren <= '1';
 			else																	-- ARITMETICAS Y LOGICAS
 				rfsource <= "10";
 				wrenmem <= '0';
-				rdenmem <= '0';
 				wren <= '1';
 			end if;
  		else
 			if op3 = "000000" then											-- LOAD
 				rfsource <= "01";
 				wrenmem <= '0';
-				rdenmem <= '1';
 				wren <= '1';
 			elsif	op3 = "000100" then										-- STORE
 				rfsource <= "11";
 				wrenmem <= '1';
-				rdenmem <= '0';
 				wren <= '0';
 			else
 				rfsource <= "11";
 				wrenmem <= '0';
-				rdenmem <= '0';
 				wren <= '0';
 			end if;
 		end if;

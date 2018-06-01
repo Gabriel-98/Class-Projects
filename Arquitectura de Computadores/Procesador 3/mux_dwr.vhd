@@ -6,6 +6,8 @@ entity mux_dwr is
            result_alu : in  STD_LOGIC_VECTOR (31 downto 0);
            pc : in  STD_LOGIC_VECTOR (31 downto 0);
            rfsource : in  STD_LOGIC_VECTOR (1 downto 0);
+			  wrenin : in  STD_LOGIC;
+			  wrenout : out  STD_LOGIC;
            datatoreg : out  STD_LOGIC_VECTOR (31 downto 0));
 end mux_dwr;
 
@@ -14,6 +16,7 @@ architecture arq_mux_dwr of mux_dwr is
 begin
 	process(datatomem,result_alu,pc,rfsource)
 	begin
+		wrenout <= wrenin;
 		case rfsource is
 			when "00" => datatoreg <= pc;					-- CALL Y JMPL
 			when "01" => datatoreg <= datatomem;		-- LOAD
