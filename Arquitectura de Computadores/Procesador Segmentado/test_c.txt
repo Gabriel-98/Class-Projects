@@ -17,7 +17,7 @@ int multiplicacion(int a, int b){
 int main(){
 	int a,b,ans;
 	a=23;
-	b=75;
+	b=7;
 	ans= multiplicacion(a,b);
 }
 

@@ -8,7 +8,7 @@
 		ba fin				envia a la instruccion final del programa (PC + 22)
 		or %g0, %g0, %g0		nop
 multiplicacion:	mov %i0, %l0			r[16] = 23
-		mov %i1, %l1			r[17] = 75
+		mov %i1, %l1			r[17] = 7
 		mov 0, %l5			se inicializa la variable del resultado r[21] = 0
 		ba while			envia al inicio del while (PC + 12)
 		or %g0, %g0, %g0		nop
