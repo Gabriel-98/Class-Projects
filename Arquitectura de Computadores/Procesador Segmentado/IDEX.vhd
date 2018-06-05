@@ -12,7 +12,6 @@ entity IDEX is
 			  pcsource_in : in  STD_LOGIC_VECTOR (1 downto 0); 
 			  wrenmem_in : in  STD_LOGIC;
 			  aluop_in : in  STD_LOGIC_VECTOR (5 downto 0);
-			  wren_in : in  STD_LOGIC;		  
 			  ncwp_in : in  STD_LOGIC_VECTOR (0 downto 0);
 			  crs1_in : in  STD_LOGIC_VECTOR (31 downto 0);
 			  crs2_in : in  STD_LOGIC_VECTOR (31 downto 0);
@@ -27,7 +26,6 @@ entity IDEX is
 			  pcsource_out : out  STD_LOGIC_VECTOR (1 downto 0);
 			  wrenmem_out : out  STD_LOGIC;
 			  aluop_out : out  STD_LOGIC_VECTOR (5 downto 0);
-			  wren_out : out  STD_LOGIC;
 			  ncwp_out : out  STD_LOGIC_VECTOR (0 downto 0);
 			  crs1_out : out  STD_LOGIC_VECTOR (31 downto 0);
 			  crs2_out : out  STD_LOGIC_VECTOR (31 downto 0);
@@ -50,7 +48,6 @@ begin
 			pcsource_out <= "00";
 			wrenmem_out <= '0';
 			aluop_out <= "000000";
-			wren_out <= '0';
 			ncwp_out <= "0";
 			crs1_out <= X"00000000";
 			crs2_out <= X"00000000";
@@ -66,7 +63,6 @@ begin
 			pcsource_out <= pcsource_in;
 			wrenmem_out <= wrenmem_in;
 			aluop_out <= aluop_in;
-			wren_out <= wren_in;
 			ncwp_out <= ncwp_in;
 			crs1_out <= crs1_in;
 			crs2_out <= crs2_in;

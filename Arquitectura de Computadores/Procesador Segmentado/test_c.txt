@@ -26,4 +26,4 @@ b2	l1
 mitad	l2
 doble	l3
 temp	l4
-mult	o0
+mult	l5

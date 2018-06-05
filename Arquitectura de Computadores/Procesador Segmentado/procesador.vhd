@@ -49,8 +49,6 @@ architecture arq_procesador of procesador is
 				  result_alu : in  STD_LOGIC_VECTOR (31 downto 0);
 				  pc : in  STD_LOGIC_VECTOR (31 downto 0);
 				  rfsource :in  STD_LOGIC_VECTOR (1 downto 0);
-				  wrenin : in  STD_LOGIC;
-				  wrenout : out  STD_LOGIC;
 				  datatoreg : out  STD_LOGIC_VECTOR (31 downto 0));
 	end component;
 	Component mux_npc 
@@ -152,8 +150,7 @@ architecture arq_procesador of procesador is
 				  rfsource_in : in  STD_LOGIC_VECTOR (1 downto 0);
 				  pcsource_in : in  STD_LOGIC_VECTOR (1 downto 0); 
 				  wrenmem_in : in  STD_LOGIC;
-				  aluop_in : in  STD_LOGIC_VECTOR (5 downto 0);
-				  wren_in : in  STD_LOGIC;		  
+				  aluop_in : in  STD_LOGIC_VECTOR (5 downto 0);	  
 				  ncwp_in : in  STD_LOGIC_VECTOR (0 downto 0);
 				  crs1_in : in  STD_LOGIC_VECTOR (31 downto 0);
 				  crs2_in : in  STD_LOGIC_VECTOR (31 downto 0);
@@ -168,13 +165,40 @@ architecture arq_procesador of procesador is
 				  pcsource_out : out  STD_LOGIC_VECTOR (1 downto 0);
 				  wrenmem_out : out  STD_LOGIC;
 				  aluop_out : out  STD_LOGIC_VECTOR (5 downto 0);
-				  wren_out : out  STD_LOGIC;
 				  ncwp_out : out  STD_LOGIC_VECTOR (0 downto 0);
 				  crs1_out : out  STD_LOGIC_VECTOR (31 downto 0);
 				  crs2_out : out  STD_LOGIC_VECTOR (31 downto 0);
 				  crd_out : out  STD_LOGIC_VECTOR (31 downto 0);
 				  op2sinm_out : out  STD_LOGIC_VECTOR (31 downto 0);
 				  i_out : out  STD_LOGIC);
+	end component;
+	Component EXMEM
+		Port (  clock : in  STD_LOGIC;
+				  reset : in STD_LOGIC;
+				  pc_in : in  STD_LOGIC_VECTOR (31 downto 0);
+				  npc_in : in  STD_LOGIC_VECTOR (31 downto 0);
+				  wrenmem_in : in  STD_LOGIC;
+				  rfsource_in : in  STD_LOGIC_VECTOR (1 downto 0);
+				  crd_in : in  STD_LOGIC_VECTOR (31 downto 0);
+				  result_alu_in : in  STD_LOGIC_VECTOR (31 downto 0);
+				  pc_out : out  STD_LOGIC_VECTOR (31 downto 0);
+				  npc_out : out  STD_LOGIC_VECTOR (31 downto 0);
+				  wrenmem_out : out  STD_LOGIC;
+				  rfsource_out : out  STD_LOGIC_VECTOR (1 downto 0);
+				  crd_out : out  STD_LOGIC_VECTOR (31 downto 0);
+				  result_alu_out : out  STD_LOGIC_VECTOR (31 downto 0));
+	end component;
+	Component MEMWB
+		Port (  clock : in  STD_LOGIC;
+				  reset : in  STD_LOGIC;
+				  rfsource_in : in  STD_LOGIC_VECTOR (1 downto 0);
+				  datatomem_in : in  STD_LOGIC_VECTOR (31 downto 0);
+				  result_alu_in : in  STD_LOGIC_VECTOR (31 downto 0);
+				  pc_in : in  STD_LOGIC_VECTOR (31 downto 0);
+				  rfsource_out : out  STD_LOGIC_VECTOR (1 downto 0);
+				  datatomem_out : out  STD_LOGIC_VECTOR (31 downto 0);
+				  result_alu_out : out  STD_LOGIC_VECTOR (31 downto 0);
+				  pc_out : out  STD_LOGIC_VECTOR (31 downto 0));
 	end component;
 	
 	signal pc2: STD_LOGIC_VECTOR(31 downto 0);
@@ -189,16 +213,24 @@ architecture arq_procesador of procesador is
 	signal pcsource2: STD_LOGIC_VECTOR(1 downto 0);
 	signal wrenmem2: STD_LOGIC;
 	signal operation_alu2: STD_LOGIC_VECTOR(5 downto 0);
-	signal wren2:  STD_LOGIC;
 	signal ncwp2: STD_LOGIC_VECTOR(0 downto 0);
 	signal crs1_2: STD_LOGIC_VECTOR(31 downto 0);
 	signal crs2_2: STD_LOGIC_VECTOR(31 downto 0);
 	signal crd_2: STD_LOGIC_VECTOR(31 downto 0);
+	signal sinm32_2: STD_LOGIC_VECTOR(31 downto 0);
 	signal i:  STD_LOGIC;
 	
-	signal wren3:  STD_LOGIC;
+	signal pc4: STD_LOGIC_VECTOR(31 downto 0);
+	signal new_npc2: STD_LOGIC_VECTOR(31 downto 0);
+	signal wrenmem3: STD_LOGIC;
+	signal rfsource3: STD_LOGIC_VECTOR(1 downto 0);
+	signal crd_3: STD_LOGIC_VECTOR(31 downto 0);
+	signal result_alu2: STD_LOGIC_VECTOR(31 downto 0);
 	
-	signal wren4:  STD_LOGIC;
+	signal rfsource4: STD_LOGIC_VECTOR(1 downto 0);
+	signal datatomem2: STD_LOGIC_VECTOR(31 downto 0);
+	signal result_alu3: STD_LOGIC_VECTOR(31 downto 0);
+	signal pc5: STD_LOGIC_VECTOR(31 downto 0);
 	
 	signal pc: STD_LOGIC_VECTOR(31 downto 0);
 	signal npc: STD_LOGIC_VECTOR(31 downto 0);
@@ -241,7 +273,7 @@ begin
 		 C => dir
 	);
 	L2: ProgramCounter Port Map(
-		 address => new_npc,
+		 address => new_npc2,
 		 reset => reset,
 		 clock => clock,
 		 PCout => npc
@@ -288,7 +320,7 @@ begin
 		 icc => icc,
 		 cond => instruction2(28 downto 25),
 		 wrenmem => wrenmem,
-		 wren => wren3,
+		 wren => wren,
 		 rfsource => rfsource,
 		 pcsource => pcsource,
 		 rfdest => rfdest,
@@ -305,7 +337,7 @@ begin
 		 rs2 => nrs2,
 		 rd => nrd,
 		 dwr => datatoreg,
-		 wren => wren2,
+		 wren => wren,
 		 reset => reset,
 		 crs1 => crs1,
 		 crs2 => crs2,
@@ -335,12 +367,11 @@ begin
 		 pcsource_in => pcsource,
 		 wrenmem_in => wrenmem,
 		 aluop_in => operation_alu,
-		 wren_in =>	wren,
 		 ncwp_in => ncwp,
 		 crs1_in => crs1,
 		 crs2_in => crs2,
 		 crd_in => crd,
-		 op2sinm_in =>
+		 op2sinm_in => sinm32,
 		 i_in => instruction2(13),
 		 pc_out => pc3,
 		 next_pc_out => dir3,
@@ -350,12 +381,11 @@ begin
 		 pcsource_out => pcsource2,
 		 wrenmem_out => wrenmem2,
 		 aluop_out => operation_alu2,
-		 wren_out => wren2,
 		 ncwp_out => ncwp2,
 		 crs1_out => crs1_2,
 		 crs2_out => crs2_2,
 		 crd_out => crd_2,
-		 op2sinm_out =>
+		 op2sinm_out => sinm32_2,
 		 i_out => i
 	);
 	--------------------------------------------
@@ -406,23 +436,50 @@ begin
 		 pcsource => pcsource2,
 		 npc => new_npc
 	);
-	
-	-- Z3
+	--------------------------------------------
+	Z3: EXMEM Port Map(
+		 clock => clock,
+		 reset => reset,
+		 pc_in => pc3,
+		 npc_in => new_npc,
+		 wrenmem_in => wrenmem2,
+		 rfsource_in => rfsource2,
+		 crd_in => crd_2,
+		 result_alu_in => result_alu,
+		 pc_out => pc4,
+		 npc_out => new_npc2,
+		 wrenmem_out => wrenmem3,
+		 rfsource_out => rfsource3,
+		 crd_out => crd_3,
+		 result_alu_out => result_alu2
+	);
+	--------------------------------------------
 	L19: DataMemory Port Map(
-		 result_alu => result_alu(4 downto 0),
-       crd => crd_2,
-       wrenmem => wrenmem2,
+		 result_alu => result_alu2(4 downto 0),
+       crd => crd_3,
+       wrenmem => wrenmem3,
        reset => reset,
        datatomem => datatomem
 	);
-	-- Z4
+	--------------------------------------------
+	Z4: MEMWB Port Map(
+		 clock => clock,
+		 reset => reset,
+		 rfsource_in => rfsource3,
+		 datatomem_in => datatomem,
+		 result_alu_in => result_alu2,
+		 pc_in => pc4,
+		 rfsource_out => rfsource4,
+		 datatomem_out => datatomem2,
+		 result_alu_out => result_alu3,
+		 pc_out => pc5
+	);
+	--------------------------------------------
 	L20: mux_dwr Port Map(
-		 datatomem => datatomem,
-       result_alu => result_alu,
-       pc => pc3,
-       rfsource => rfsource2,
-		 wrenin => wren2,
-		 wrenout => wren3,
+		 datatomem => datatomem2,
+       result_alu => result_alu3,
+       pc => pc5,
+       rfsource => rfsource4,
        datatoreg => datatoreg
 	);
 	
